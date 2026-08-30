@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["idempotency_key", "name", "slug", "owner_subject"],
+  "properties": {
+    "idempotency_key": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "slug": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "owner_subject": { "type": "string", "minLength": 1, "maxLength": 256 }
+  },
+  "additionalProperties": false
+}

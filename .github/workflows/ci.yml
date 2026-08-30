@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    env:
+      LENSO_ORGANIZATION_PROVISIONING_TEST_DATABASE_URL: postgresql://postgres@localhost:5432/organization_provisioning_test
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: organization_provisioning_test
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready --username=postgres --dbname=organization_provisioning_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install repository tools
+        run: sudo apt-get update && sudo apt-get install --yes jq ripgrep
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@fa04a1451ff1842e2626ccb99004d0195b455a88 # stable
+        with:
+          toolchain: 1.94.0
+          components: rustfmt, clippy
+      - name: Check Rust formatting
+        run: cargo fmt --all -- --check
+      - name: Check all targets and features
+        run: cargo check --locked --workspace --all-targets --all-features
+      - name: Test Rust and PostgreSQL behavior
+        run: cargo test --locked --workspace --all-targets --all-features
+      - name: Lint all targets and features
+        run: cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
+      - name: Install exact contract projection checker
+        run: >-
+          cargo install --locked
+          --git https://github.com/LioRael/lenso-protocols
+          --rev 9769bc5dc828fd9111da6d28a4ecd5f1bb198ab4
+          lenso-contract-codegen
+      - name: Verify exact Capability projections
+        run: |
+          lenso-contract-codegen check \
+            crates/lenso-capability-organization-provisioning/capability.json \
+            --rust crates/lenso-capability-organization-provisioning/src/generated.rs
+          lenso-contract-codegen check \
+            crates/lenso-capability-organization-provisioning-worker/capability.json \
+            --rust crates/lenso-capability-organization-provisioning-worker/src/generated.rs
+      - name: Check repository boundary
+        run: ./scripts/check-repository-boundary.sh
+      - name: Verify public packages and normalized consumer graph
+        run: ./scripts/check-public-packages.sh

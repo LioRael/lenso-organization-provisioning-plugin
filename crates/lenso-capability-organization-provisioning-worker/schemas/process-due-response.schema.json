@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["claimed", "completed", "failed", "manual_review", "quarantined", "has_more"],
+  "properties": {
+    "claimed": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "completed": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "failed": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "manual_review": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "quarantined": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "has_more": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["provisioning_id", "expected_revision", "idempotency_key", "resolution", "observed_organization_id", "observed_owner_membership_id", "observed_grant_id", "evidence"],
+  "properties": {
+    "provisioning_id": { "type": "string" },
+    "expected_revision": { "type": "string", "pattern": "^[1-9][0-9]*$" },
+    "idempotency_key": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "resolution": { "enum": ["retry_failed", "confirm_applied", "confirm_not_applied"] },
+    "observed_organization_id": { "type": ["string", "null"], "maxLength": 512 },
+    "observed_owner_membership_id": { "type": ["string", "null"], "maxLength": 512 },
+    "observed_grant_id": { "type": ["string", "null"], "maxLength": 512 },
+    "evidence": { "type": "string", "minLength": 1, "maxLength": 4000 }
+  },
+  "additionalProperties": false
+}
