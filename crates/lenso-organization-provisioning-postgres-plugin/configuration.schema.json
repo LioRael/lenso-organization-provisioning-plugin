@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PostgreSQL Organization Provisioning Plugin configuration",
+  "type": "object",
+  "required": ["schema", "database_url_secret", "auth_issuer", "auth_assertion_public_key", "management_callers", "worker_callers", "bootstrap_grants"],
+  "properties": {
+    "schema": { "type": "string", "minLength": 1, "maxLength": 63 },
+    "database_url_secret": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "auth_issuer": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "auth_assertion_public_key": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "management_callers": { "type": "array", "minItems": 1, "maxItems": 64, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 256 } },
+    "worker_callers": { "type": "array", "minItems": 1, "maxItems": 64, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 256 } },
+    "bootstrap_grants": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "required": ["subject_kind", "feature", "limit"],
+        "properties": {
+          "subject_kind": { "enum": ["organization", "owner"] },
+          "feature": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "limit": { "type": ["string", "null"], "pattern": "^[1-9][0-9]*$", "maxLength": 19 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

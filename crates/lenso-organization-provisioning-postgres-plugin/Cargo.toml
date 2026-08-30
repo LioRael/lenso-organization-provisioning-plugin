@@ -1,0 +1,45 @@
+[package]
+name = "lenso-organization-provisioning-postgres-plugin"
+version = "0.1.0"
+description = "PostgreSQL-backed durable Organization Provisioning saga Plugin for Lenso applications."
+edition.workspace = true
+license.workspace = true
+publish = true
+repository.workspace = true
+rust-version.workspace = true
+
+[package.metadata.lenso]
+plugin-id = "lenso.organization-provisioning.postgres"
+root-slot = "organization-provisioning"
+
+[features]
+default = []
+postgres-acceptance = []
+
+[dependencies]
+futures.workspace = true
+lenso.workspace = true
+lenso-auth-sdk.workspace = true
+lenso-capability-entitlements-admin.workspace = true
+lenso-capability-organization-admin.workspace = true
+lenso-capability-organization-provisioning = { version = "0.1.0", path = "../lenso-capability-organization-provisioning" }
+lenso-capability-organization-provisioning-worker = { version = "0.1.0", path = "../lenso-capability-organization-provisioning-worker" }
+lenso-capability-secrets.workspace = true
+lenso-kernel.workspace = true
+lenso-native-adapter.workspace = true
+lenso-postgres-kit.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+sqlx.workspace = true
+thiserror.workspace = true
+time.workspace = true
+uuid.workspace = true
+zeroize.workspace = true
+
+[dev-dependencies]
+lenso-app-plan.workspace = true
+tokio.workspace = true
+
+[lints]
+workspace = true

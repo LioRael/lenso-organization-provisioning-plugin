@@ -1,0 +1,43 @@
+{
+  "id": "lenso.organization-provisioning@1",
+  "version": "1.0.0",
+  "portable": true,
+  "cross_lane_transfer": true,
+  "operations": [
+    {
+      "name": "start",
+      "interaction": "request",
+      "request_schema": "schemas/start-request.schema.json",
+      "response_schema": "schemas/provisioning-response.schema.json",
+      "domain_error_schema": "schemas/error.schema.json"
+    },
+    {
+      "name": "get",
+      "interaction": "request",
+      "request_schema": "schemas/get-request.schema.json",
+      "response_schema": "schemas/provisioning-response.schema.json",
+      "domain_error_schema": "schemas/error.schema.json"
+    },
+    {
+      "name": "list",
+      "interaction": "request",
+      "request_schema": "schemas/list-request.schema.json",
+      "response_schema": "schemas/list-response.schema.json",
+      "domain_error_schema": "schemas/error.schema.json"
+    },
+    {
+      "name": "retry",
+      "interaction": "request",
+      "request_schema": "schemas/retry-request.schema.json",
+      "response_schema": "schemas/provisioning-response.schema.json",
+      "domain_error_schema": "schemas/error.schema.json"
+    },
+    {
+      "name": "request_cleanup",
+      "interaction": "request",
+      "request_schema": "schemas/request-cleanup-request.schema.json",
+      "response_schema": "schemas/provisioning-response.schema.json",
+      "domain_error_schema": "schemas/error.schema.json"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["provisioning_id", "status", "revision", "name", "slug", "owner_subject", "requested_by", "organization_id", "owner_membership_id", "cleanup_requested", "organization_residue", "last_error", "steps", "created_at", "updated_at", "completed_at", "cleanup_completed_at"],
+  "properties": {
+    "provisioning_id": { "type": "string" },
+    "status": { "enum": ["pending", "running", "completed", "failed", "manual_review", "cleanup_pending", "cleanup_running", "cleanup_completed", "cleanup_failed"] },
+    "revision": { "type": "string", "pattern": "^[1-9][0-9]*$" },
+    "name": { "type": "string" },
+    "slug": { "type": "string" },
+    "owner_subject": { "type": "string" },
+    "requested_by": { "type": "string" },
+    "organization_id": { "type": ["string", "null"] },
+    "owner_membership_id": { "type": ["string", "null"] },
+    "cleanup_requested": { "type": "boolean" },
+    "organization_residue": { "type": "boolean" },
+    "last_error": { "type": ["string", "null"] },
+    "steps": {
+      "type": "array",
+      "maxItems": 65,
+      "items": {
+        "type": "object",
+        "required": ["effect_id", "kind", "ordinal", "status", "attempt", "external_id", "last_error", "updated_at"],
+        "properties": {
+          "effect_id": { "type": "string" },
+          "kind": { "enum": ["create_organization", "put_entitlement", "revoke_entitlement"] },
+          "ordinal": { "type": "integer", "minimum": 0, "maximum": 64 },
+          "status": { "enum": ["pending", "in_flight", "applied", "failed", "unknown", "compensated", "skipped"] },
+          "attempt": { "type": "integer", "minimum": 0 },
+          "external_id": { "type": ["string", "null"] },
+          "last_error": { "type": ["string", "null"] },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "completed_at": { "type": ["string", "null"], "format": "date-time" },
+    "cleanup_completed_at": { "type": ["string", "null"], "format": "date-time" }
+  },
+  "additionalProperties": false
+}

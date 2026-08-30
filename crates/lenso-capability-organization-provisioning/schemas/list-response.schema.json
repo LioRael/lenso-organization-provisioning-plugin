@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["items", "next_cursor"],
+  "properties": {
+    "items": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "required": ["provisioning_id", "status", "revision", "name", "slug", "owner_subject", "organization_id", "cleanup_requested", "organization_residue", "last_error", "created_at", "updated_at"],
+        "properties": {
+          "provisioning_id": { "type": "string" },
+          "status": { "enum": ["pending", "running", "completed", "failed", "manual_review", "cleanup_pending", "cleanup_running", "cleanup_completed", "cleanup_failed"] },
+          "revision": { "type": "string", "pattern": "^[1-9][0-9]*$" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "owner_subject": { "type": "string" },
+          "organization_id": { "type": ["string", "null"] },
+          "cleanup_requested": { "type": "boolean" },
+          "organization_residue": { "type": "boolean" },
+          "last_error": { "type": ["string", "null"] },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "next_cursor": { "type": ["string", "null"], "maxLength": 512 }
+  },
+  "additionalProperties": false
+}

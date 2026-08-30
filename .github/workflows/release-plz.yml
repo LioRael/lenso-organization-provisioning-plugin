@@ -1,0 +1,77 @@
+name: Release-plz
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Validate the release without publishing
+        required: true
+        default: true
+        type: boolean
+      live_guard:
+        description: Type publish when dry_run is disabled
+        required: false
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: organization-provisioning-crates-release
+  cancel-in-progress: false
+
+jobs:
+  reject-unsafe-release:
+    name: Reject unsafe release request
+    if: ${{ github.ref != 'refs/heads/main' || (!inputs.dry_run && inputs.live_guard != 'publish') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Explain the rejected release
+        run: |
+          echo "Release validation and publication require ref=main." >&2
+          echo "Live publication also requires dry_run=false and live_guard=publish." >&2
+          exit 1
+
+  dry-run:
+    name: Release dry-run
+    if: ${{ inputs.dry_run && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - &checkout
+        name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - &install-rust
+        name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@fa04a1451ff1842e2626ccb99004d0195b455a88 # stable
+        with:
+          toolchain: 1.94.0
+      - name: Validate the release without publishing
+        uses: release-plz/action@2eb1d8bcb770b4c48ccfaad919734b38b51958c9 # v0.5.131
+        with:
+          command: release
+          dry_run: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    name: Publish crates
+    if: ${{ !inputs.dry_run && inputs.live_guard == 'publish' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: read
+      id-token: write
+    steps:
+      - *checkout
+      - *install-rust
+      - name: Publish unpublished crates
+        uses: release-plz/action@2eb1d8bcb770b4c48ccfaad919734b38b51958c9 # v0.5.131
+        with:
+          command: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
