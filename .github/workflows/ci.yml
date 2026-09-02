@@ -47,17 +47,10 @@ jobs:
       - name: Install exact contract projection checker
         run: >-
           cargo install --locked
-          --git https://github.com/LioRael/lenso-protocols
-          --rev 9769bc5dc828fd9111da6d28a4ecd5f1bb198ab4
+          --version '=0.6.5'
           lenso-contract-codegen
       - name: Verify exact Capability projections
-        run: |
-          lenso-contract-codegen check \
-            crates/lenso-capability-organization-provisioning/capability.json \
-            --rust crates/lenso-capability-organization-provisioning/src/generated.rs
-          lenso-contract-codegen check \
-            crates/lenso-capability-organization-provisioning-worker/capability.json \
-            --rust crates/lenso-capability-organization-provisioning-worker/src/generated.rs
+        run: lenso-contract-codegen workspace check --manifest-path Cargo.toml
       - name: Check repository boundary
         run: ./scripts/check-repository-boundary.sh
       - name: Verify public packages and normalized consumer graph
